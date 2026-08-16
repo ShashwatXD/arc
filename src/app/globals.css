@@ -1,26 +1,80 @@
 @import "tailwindcss";
+@import "@xyflow/react/dist/style.css";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #0c0d0f;
+  --bg-elev: #13151b;
+  --bg-sunken: #08090b;
+  --line: #23262d;
+  --line-strong: #353a45;
+  --text: #ece8e1;
+  --muted: #9a958c;
+  --copper: #e8a54b;
+  --copper-dim: #8a5e22;
+  --good: #7dba8a;
+  --bad: #e07a6a;
+  --info: #8aa7c7;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-bg: var(--bg);
+  --color-bg-elev: var(--bg-elev);
+  --color-bg-sunken: var(--bg-sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-copper: var(--copper);
+  --color-copper-dim: var(--copper-dim);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --color-info: var(--info);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  min-height: 100%;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+* {
+  border-color: var(--line);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--copper) 40%, transparent);
+}
+
+input,
+textarea,
+button {
+  font: inherit;
+}
+
+.react-flow {
+  --xy-background-color: var(--bg-sunken);
+  --xy-node-border-radius: 12px;
+  background: var(--bg-sunken) !important;
+}
+
+.react-flow__minimap {
+  background: var(--bg-elev) !important;
+}
+
+.react-flow__controls button {
+  background: var(--bg-elev) !important;
+  border-color: var(--line) !important;
+  fill: var(--text) !important;
+}
+
+.react-flow__edge-path {
+  stroke: #6b6458;
+}
+
+.react-flow__attribution {
+  display: none;
 }
