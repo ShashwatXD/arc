@@ -8,6 +8,11 @@ export {
   nodeByKind,
   parseNodeConfig,
   nodeKinds,
+  queryKinds,
+  defaultNodeConfig,
+  queryWaves,
+  isQueryKind,
+  isIndexKind,
 } from "./workflow";
 export type { Workflow, WorkflowGraph, WorkflowNode, NodeKind, WorkflowIssue } from "./workflow";
 export { workflowTemplates } from "./templates";

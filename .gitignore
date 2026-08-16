@@ -24,7 +24,6 @@
 .DS_Store
 *.pem
 
-# local agent / editor
 .cursor/
 AGENTS.md
 CLAUDE.md

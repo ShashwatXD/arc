@@ -109,9 +109,11 @@ export async function runEvalSuite(input: { workspaceId: string; datasetId: stri
       });
       retrieved.traceSteps.push({
         name: "generate",
+        nodeId: retrieved.traceSteps.find((s) => s.name === "generate")?.nodeId ?? "generate",
         startedAt: clock,
         durationMs: Date.now() - clock,
         detail: `${answer.length} chars`,
+        status: "ok",
       });
       const trace = await persistTrace({
         workspaceId: input.workspaceId,

@@ -3,7 +3,7 @@ import "server-only";
 import { ChatOpenAI } from "@langchain/openai";
 import { OpenAIEmbeddings } from "@langchain/openai";
 import type { EmbedderPort, LlmPort, LlmRequest } from "@/domain/ports";
-import { env, requireOpenAiKey } from "@/lib/env";
+import { embeddingApiKey, env, requireOpenAiKey } from "@/lib/env";
 
 export function hasOpenAiKey(): boolean {
   return Boolean(env().OPENAI_API_KEY);
@@ -25,13 +25,19 @@ function contentToText(content: unknown): string {
   return "";
 }
 
+function clientOptions(baseURL: string | undefined) {
+  return baseURL ? { baseURL } : undefined;
+}
+
 function chatModel(input: Pick<LlmRequest, "model" | "temperature">) {
+  const { OPENAI_BASE_URL } = env();
   return new ChatOpenAI({
     model: input.model,
     temperature: input.temperature ?? 0.1,
     apiKey: requireOpenAiKey(),
     timeout: 60_000,
     maxRetries: 4,
+    configuration: clientOptions(OPENAI_BASE_URL),
   });
 }
 
@@ -62,9 +68,10 @@ export function createOpenAiEmbedder(model = env().EMBEDDING_MODEL): EmbedderPor
       if (texts.length === 0) return [];
       const embeddings = new OpenAIEmbeddings({
         model,
-        apiKey: requireOpenAiKey(),
+        apiKey: embeddingApiKey(),
         timeout: 60_000,
         maxRetries: 4,
+        configuration: clientOptions(env().EMBEDDING_BASE_URL ?? env().OPENAI_BASE_URL),
       });
       return embeddings.embedDocuments(texts);
     },

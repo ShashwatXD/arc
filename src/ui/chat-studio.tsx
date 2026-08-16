@@ -105,13 +105,21 @@ export function ChatStudio({ workspaceId }: { workspaceId: string }) {
         if (!event || !raw) continue;
         const data = JSON.parse(raw);
         if (event === "meta") {
-          setConversationId(data.conversationId);
-          setCitations(data.citations ?? []);
-          setSteps(data.steps ?? []);
-          setRewritten(data.rewritten);
+          if (typeof data.conversationId === "string") setConversationId(data.conversationId);
+        }
+        if (event === "context") {
+          setCitations((data.citations as Citation[]) ?? []);
+          setSteps((data.steps as TraceStep[]) ?? []);
+          setRewritten(typeof data.rewritten === "string" ? data.rewritten : null);
           setMessages((list) =>
-            list.map((m) => (m.id === assistant.id ? { ...m, citations: data.citations ?? [] } : m)),
+            list.map((m) =>
+              m.id === assistant.id ? { ...m, citations: (data.citations as Citation[]) ?? [] } : m,
+            ),
           );
+        }
+        if (event === "step") {
+          const step = data as TraceStep;
+          setSteps((s) => [...s.filter((x) => x.nodeId !== step.nodeId), step]);
         }
         if (event === "token") {
           acc += data.token;
@@ -186,7 +194,7 @@ export function ChatStudio({ workspaceId }: { workspaceId: string }) {
                   <Answer text={m.content} onCite={(n) => setActiveChunk(m.citations[n - 1] ?? citations[n - 1] ?? null)} />
                 </div>
               ))}
-              {busy ? <div className="text-sm text-muted">Retrieving and writing…</div> : null}
+              {busy ? <div className="text-sm text-muted">Graph is running — watch the Run tab for live nodes.</div> : null}
               <div ref={bottom} />
             </div>
           )}

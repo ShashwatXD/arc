@@ -109,10 +109,12 @@ export type EvalResult = {
 export type TraceKind = "chat" | "eval";
 
 export type TraceStep = {
-  name: "rewrite" | "retrieve" | "rerank" | "generate";
+  name: string;
+  nodeId: string;
   startedAt: number;
   durationMs: number;
   detail: string;
+  status: "ok" | "skip" | "error";
   data?: Record<string, unknown>;
 };
 

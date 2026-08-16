@@ -47,7 +47,7 @@ export type RetrievalPort = {
 
 export type RerankerPort = {
   available: boolean;
-  rerank(query: string, chunks: Chunk[], topN: number): Promise<Chunk[]>;
+  rerank(query: string, chunks: Chunk[], topN: number, model?: string): Promise<Chunk[]>;
 };
 
 export type RetrieveInput = {
@@ -55,6 +55,8 @@ export type RetrieveInput = {
   question: string;
   history: LlmMessage[];
   workflowId?: string;
+  onStep?: (step: TraceStep) => void | Promise<void>;
+  onNodeStart?: (info: { nodeId: string; kind: string }) => void | Promise<void>;
 };
 
 export type RetrieveResult = {

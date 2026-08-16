@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Badge } from "./badge";
 
-type Health = { openai: boolean; cohere: boolean; qdrant: boolean };
+type Health = { openai: boolean; qdrant: boolean };
 
 export function KeyBanner() {
   const [health, setHealth] = useState<Health | null>(null);
@@ -11,14 +12,13 @@ export function KeyBanner() {
     fetch("/api/health")
       .then((r) => r.json())
       .then(setHealth)
-      .catch(() => setHealth({ openai: false, cohere: false, qdrant: false }));
+      .catch(() => setHealth({ openai: false, qdrant: false }));
   }, []);
   if (!health) return null;
   return (
-    <div className="flex items-center gap-2">
-      <Badge tone={health.openai ? "good" : "bad"}>{health.openai ? "OpenAI" : "No OpenAI"}</Badge>
+    <Link href="/settings" className="flex items-center gap-2" title="Open keys">
+      <Badge tone={health.openai ? "good" : "bad"}>{health.openai ? "Chat key" : "Add chat key"}</Badge>
       <Badge tone={health.qdrant ? "good" : "bad"}>{health.qdrant ? "Qdrant" : "Qdrant down"}</Badge>
-      <Badge tone={health.cohere ? "copper" : "muted"}>{health.cohere ? "Rerank" : "Rerank off"}</Badge>
-    </div>
+    </Link>
   );
 }

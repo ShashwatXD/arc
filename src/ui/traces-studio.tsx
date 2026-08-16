@@ -30,7 +30,7 @@ export function TracesStudio({ workspaceId }: { workspaceId: string }) {
         {traces.length === 0 ? (
           <EmptyState
             title="No traces yet"
-            body="Chat or run evals. Every retrieve → rerank → generate path is recorded here."
+            body="Run a question on the graph or evals. Each node records status, timing, and output."
           />
         ) : (
           traces.map((trace) => (
@@ -66,7 +66,9 @@ export function TracesStudio({ workspaceId }: { workspaceId: string }) {
                 <li key={i} className="rounded-2xl border border-line bg-bg-elev p-4">
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-medium capitalize">{step.name}</div>
-                    <div className="font-mono text-xs text-muted">{step.durationMs}ms</div>
+                    <div className="font-mono text-xs text-muted">
+                      {step.status ?? "ok"} · {step.durationMs}ms
+                    </div>
                   </div>
                   <p className="mt-2 text-sm text-muted">{step.detail}</p>
                   {step.data ? (

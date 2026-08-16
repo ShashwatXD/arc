@@ -184,6 +184,12 @@ export async function listWorkflows(workspaceId: string): Promise<Workflow[]> {
   return rows.map(mapWorkflow);
 }
 
+export async function listAllWorkflows(): Promise<Workflow[]> {
+  const db = await getDb();
+  const rows = await db.select().from(t.workflows).orderBy(desc(t.workflows.createdAt));
+  return rows.map(mapWorkflow);
+}
+
 export async function getWorkflow(id: string): Promise<Workflow | null> {
   const db = await getDb();
   const rows = await db.select().from(t.workflows).where(eq(t.workflows.id, id)).limit(1);

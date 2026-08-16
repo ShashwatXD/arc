@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "./button";
 import { Input, Textarea } from "./fields";
@@ -57,7 +58,12 @@ export function HomeStudio() {
     <div className="min-h-screen">
       <header className="flex h-14 items-center justify-between border-b border-line px-6">
         <div className="font-mono text-sm tracking-[0.2em] text-copper">ARC</div>
-        <KeyBanner />
+        <div className="flex items-center gap-4">
+          <KeyBanner />
+          <Link href="/settings" className="text-sm text-muted hover:text-text">
+            Keys
+          </Link>
+        </div>
       </header>
       <main className="mx-auto grid max-w-6xl gap-10 px-6 py-12 lg:grid-cols-[1.1fr_0.9fr]">
         <section>
@@ -94,7 +100,7 @@ export function HomeStudio() {
             workspaces.map((ws) => (
               <button
                 key={ws.id}
-                onClick={() => router.push(`/w/${ws.id}/chat`)}
+                onClick={() => router.push(`/w/${ws.id}/workflow`)}
                 className="w-full rounded-2xl border border-line bg-bg-elev p-5 text-left transition hover:border-copper/40"
               >
                 <div className="flex items-center justify-between gap-3">

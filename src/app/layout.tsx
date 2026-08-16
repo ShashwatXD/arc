@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Arc — RAG workflow studio",
+  title: "Arc - RAG workflow studio",
   description: "Compose retrieval workflows, ground every answer, and ship only when evals pass.",
 };
 

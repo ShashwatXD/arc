@@ -8,7 +8,6 @@ const nextConfig: NextConfig = {
     "@langchain/langgraph",
     "@langchain/openai",
     "@langchain/textsplitters",
-    "@langchain/cohere",
     "@qdrant/js-client-rest",
   ],
   experimental: {

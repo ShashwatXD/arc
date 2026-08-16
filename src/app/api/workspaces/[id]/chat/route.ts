@@ -49,12 +49,6 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
     });
 
     const { runner, llm } = getServices();
-    const retrieved = await runner.retrieve({
-      workspaceId: id,
-      question,
-      history,
-    });
-
     const encoder = new TextEncoder();
     const stream = new ReadableStream({
       async start(controller) {
@@ -62,8 +56,15 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           controller.enqueue(encoder.encode(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`));
         };
         try {
-          send("meta", {
-            conversationId,
+          send("meta", { conversationId });
+          const retrieved = await runner.retrieve({
+            workspaceId: id,
+            question,
+            history,
+            onNodeStart: (info) => send("node", { ...info, status: "running" }),
+            onStep: (step) => send("step", step),
+          });
+          send("context", {
             citations: retrieved.citations,
             rewritten: retrieved.rewritten,
             steps: retrieved.traceSteps,
@@ -80,10 +81,13 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
           }
           retrieved.traceSteps.push({
             name: "generate",
+            nodeId: retrieved.traceSteps.find((s) => s.name === "generate")?.nodeId ?? "generate",
             startedAt: clock,
             durationMs: Date.now() - clock,
             detail: `${full.length} chars`,
+            status: "ok",
           });
+          send("step", retrieved.traceSteps[retrieved.traceSteps.length - 1]);
           const trace = await persistTrace({
             workspaceId: id,
             kind: "chat",
@@ -102,12 +106,8 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
             traceId: trace.id,
             createdAt: Date.now(),
           });
-          await repos.updateConversationTitle(
-            conversationId!,
-            question.slice(0, 72),
-            Date.now(),
-          );
-          send("done", { messageId: assistantId, traceId: trace.id });
+          await repos.updateConversationTitle(conversationId!, question.slice(0, 72), Date.now());
+          send("done", { messageId: assistantId, traceId: trace.id, citations: retrieved.citations });
         } catch (error) {
           const message = error instanceof Error ? error.message : "Generation failed";
           send("error", { error: message });
