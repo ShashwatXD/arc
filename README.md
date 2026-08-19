@@ -35,7 +35,15 @@ A frozen test suite does not change if the agent adds retries. An LLM that dumps
 ## CLI
 
 ```bash
-arc evaluate ./repo --task "implement caching"
+pnpm install
+pnpm test
+pnpm evaluate -- targets/cache --task "implement caching"
+```
+
+Or:
+
+```bash
+pnpm exec tsx src/cli/index.ts evaluate targets/cache --task "implement caching"
 ```
 
 ```
@@ -47,6 +55,8 @@ Discovered: cache key collision; in-flight duplicate work
 Untested:   listed on the scorecard
 Score:      72/100
 ```
+
+Set `OPENAI_API_KEY` to let the planner pick the next `ProbeSpec` (still catalog-only). Without a key, a deterministic search is used. `ARC_SANDBOX=docker` runs probes in `node:22-alpine` with network off.
 
 CLI-first. No web UI in the first release.
 
@@ -68,7 +78,7 @@ targets/cache     fixture target (caching HTTP client)
 - **Sandbox:** Docker per episode; network off unless the mock proxy is injected
 - **Node:** `node:test` and undici MockAgent
 - **Python:** pytest and httpx/`respx`, same `ProbeSpec`
-- **Inspect:** `ts-morph` or Python `ast`; OpenAPI when present
+- **Inspect:** TypeScript AST (`typescript` compiler API); OpenAPI when present
 
 ## Locks
 
